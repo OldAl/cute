@@ -21,7 +21,7 @@ optional arguments:
 
 positional arguments:
 ---------------------
-segments     - a list of two-tuples of segments of input file
+segments     - a list of limits of segments of input file
 inpath       - path to the directory with input files
 outpath      - path to the directory to store output files.  '''
 
@@ -31,14 +31,16 @@ import argparse
 import subprocess
 import time
 
-__version__ = '0.0.0 2015-11-28 Canberra'
+__version__ = '0.0.1 2015-11-29 Canberra'
 
 print('cutelib.py  version ' + __version__)
+print('**********************************************\n')
 
 # Following 2 lines are required work-around to use IDLE
 ##sys.argv = [sys.argv[0],'-v','-a','segments','inpath','outpath']
-sys.argv = [sys.argv[0],'-v'] 
+sys.argv = [sys.argv[0],'-v', '-a'] 
 print ('sys.argv = ', sys.argv)
+
 
 def prolog():
     'Initialise arguments for execution of the program.'
@@ -78,15 +80,16 @@ are kept unchanged.'''
     # the parameters (paras) will need to be read by this program as data
     videos = 'This is the list of the content of the videos.'
     filenames = os.listdir(inpath)
+
     videos = 'List of available videos.\n'   
     for v in filenames:
         videos +=  v + '\n'
     print(videos)
 #   write out this video list in "output" directory
     print('outpath = ', outpath)
-    with open(videos, "w") as f:
+    with open('filename', 'w') as f:
         if allow:
-            f.write()
+            f.write(videos)
 # videos = movie program is done
 # prepare 'shortnames' a filenames with possibly shorter names.
     shortnames = []
@@ -94,42 +97,54 @@ are kept unchanged.'''
     x1 = int(segments[0])
     x2 = int(segments[1])
     for v in filenames:
-
-        t = v[:x1] + v[x2:]
+        if (len(v) - 4) > x1:
+            xx = x1
+        else:
+            xx = len(v) - 4
+        t = v[:xx] + v[x2:]
         print('t = ', t)
         w = ''
         for vv in t.replace('-',' ').split():
             if verbose:               
                 print('split vv = ',vv)
-            w += (vv+'_') 
-             
+            w += (vv+'_')            
         shortnames.append(w[:-1])
     print('\n*** shortnames ***\n')
     for short in shortnames:
         print(short)
-# finally, do the renaming
     nn = len(shortnames)
     if allow:       
         for i in range(len(shortnames)):
             os.rename(('data/' + filenames[i]), 'data/' + shortnames[i])
-    print("Finished up filenames? If not then this is not the end!")   
+    print("Finished up filenames? If not then this is not the end!\n")   
     return
 
 def transcode(args):
-    print('I am callhndb(args)')
+    print('I am transcode(args)')
     cwd = os.getcwd() 
     print('cwd = ', cwd)
     filenames = os.listdir(cwd + '/data/')
+    filenames.sort()
     listinput = []
+    
     for name in filenames:
+        start_time = time.time()
+##        while True:
+##            time.sleep(2)
+##            print('.',end='')
+##            sys.stdout.flush()
         if name[-4: ] == '.flv':
-            a = "HandBrakeCLI"
-            b = cwd + '/data/'   + name
-            c = cwd + '/output/' + name + '.mp4'
-            print (a, b, c)
-            if args.allow:
-                subprocess.call([a, "-i", b, "-o", c])
-    print('Transcode loop completed')
+            listinput.append(name)
+            subprocess.call(["HandBrakeCLI", "-i",cwd + '/data/'+ name,
+                            "-o", cwd + '/output/' + name + '.mp4'])
+        
+        print('processed = ', name + '.mp4')
+        arrival_time = time.time()
+        print('Elapsed time for file transcode = ',
+              int(arrival_time - start_time),' in seconds.')
+        print('Transcode loop completed\n')
+    print('filenames = ', filenames)
+    return
 
 def main():
     print('main program accessed')
@@ -147,4 +162,4 @@ if __name__=='__main__':
 ## todo:
 ##  Run with '-a' argument and degug
 ##  record and show time of transcoding
-
+##  0.0.1 Added sample data files in "data" which is in a  'cute' subdirectory.
