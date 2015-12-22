@@ -1,4 +1,5 @@
-#!/usr/bin/python3
+#!/usrh_data/Peleda - S01E02 - Series 1 Ep 2 Giltine.flv
+bin/python3
 # 
 # program is usefull for multi media file organisation to ease access
 # to available media files and to transcode file when transcoding
@@ -31,7 +32,7 @@ import argparse
 import subprocess
 import time
 
-__version__ = '0.0.2   2015-12-22 Canberra'
+__version__ = '0.0.3   2015-12-22 Canberra'
 
 print('cutelib.py  version ' + __version__)
 print('**********************************************\n')
