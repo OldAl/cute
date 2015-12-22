@@ -23,5 +23,28 @@ As the name suggests the emphasis is on being *cute* and Python is wonderfully s
 
 At this stage no **GUI** is planned for the cutelib.py.
 
+**Development notes**
+
+**Wish list**
+
+Transcoding is a very slow process.  Typically, one hour flv video conversion to mp4 takes some 15 - 20 minutes.  It looks as if the program is dead whilst the computer furiously crunches numbers.  I failed to provide a signal, such as a series of dots, to show that something is going on.
+
+**To Do**
+
+Renaming of  files turns out to be a task that needs to be considered seriously. The file names shall:
+* have no blanks.  Blanks are to be replaced by alphanumeric characters.
+* No + - signs in the alpha, so no hyphens.
+* In serials, serial and episode numbers near the beginning of file name.
+* File name length not to exceed about 50 chars.  Why 50 - don't know :)
+
+** ######## **
+
+In renaming we need to consider what information can be discarded and what can be relegated to  a list of file names.  The list will inform users what is in the episode.  That will enable the user to select what she wants to watch.
+
+The most flexible way of renaming is to do it by hand with the aid of file manager, such as Dolphin. Most flexible and most tedious.  We will attempt to classify schemes for some types of related file names, so that they can be renamed programatically.
+
+Usually a bunch of files of a serial video will have something in common.  It turns out that  
+
+
 
 

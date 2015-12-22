@@ -31,7 +31,7 @@ import argparse
 import subprocess
 import time
 
-__version__ = '0.0.1 2015-11-29 Canberra'
+__version__ = '0.0.2   2015-12-22 Canberra'
 
 print('cutelib.py  version ' + __version__)
 print('**********************************************\n')
@@ -40,6 +40,37 @@ print('**********************************************\n')
 ##sys.argv = [sys.argv[0],'-v','-a','segments','inpath','outpath']
 sys.argv = [sys.argv[0],'-v', '-a'] 
 print ('sys.argv = ', sys.argv)
+
+def listprint(lst):
+    for item in lst:
+        print(item)
+
+def washme(filename):
+    ''' Take a file name, possibly with blanks and "-" then
+    return washed_name without blanks and minus signs (hyphens).
+    All of "wash" could be done in one line as list comprehension.
+    It would be more "Pythonic" and IMHO harder to read.
+    The statment "harder to read is" hotly disputed, hence IMHO.
+    Well, this is a more "Pythonic" version. If you can read it and
+    comprehend, you deserve a masters!'''
+    
+    w = ''
+    for x in [v+'_' for v in filename.replace('-',' ').split()]:
+        w += x
+    return w[:-1]
+
+def logit(data_dir):
+    '''In the cute folder, data processing is in 3 stages:
+"fresh_data" is a directory with freshly imported data - nothing is ever
+written to fresh_data, other than importation of a bunch of files.
+"data"  has the files, partly processed, viz changed file names
+"output" has the files written by Handbrake. It also has the logbook.'''
+    w = ''
+    lst = os.listdir(data_dir)
+    lst.sort()
+    for v in lst:
+        w += v + '\n'
+    return w[:-1]
 
 
 def prolog():
@@ -51,8 +82,8 @@ def prolog():
     parser.add_argument('-a','--allow',action='store_true',
                         help='Allow modification of data on disk.')
 
-    parser.add_argument('segments',nargs='?',default=[26, -4],
-                        help='26 ch at start, 4 at end remain in file name.')
+    parser.add_argument('segments',nargs='?',default=[13, -4],
+    help='segs[0] ch at start, segs[1] at end makeup the file name.')
     parser.add_argument('inpath',nargs='?',default=os.getcwd()+'/data/',
                         help='absolute path to data directory.')
     parser.add_argument('outpath',nargs='?',default=os.getcwd()+'/output/',
@@ -61,7 +92,7 @@ def prolog():
     args = parser.parse_args()
     if args.verbose:
         print('prolog finished setting up of args.')                
-        print('Name space args = ',args)
+        print('Name space args = ', args)
         return args
 
 def fix_filenames(args):
@@ -76,47 +107,28 @@ are kept unchanged.'''
     inpath   = args.inpath
     outpath  = args.outpath
     
-    print('Namespace args = ', verbose, allow, segments, inpath, outpath)
+    print('\n Formatted Namespace args = \n','verbose = ', verbose,'\n',
+          'allow = ',allow,'\n','segments = ',segments,'\n',
+          'inpath = ',inpath,'\n','outpath = ',outpath,'\n')
     # the parameters (paras) will need to be read by this program as data
     videos = 'This is the list of the content of the videos.'
-    filenames = os.listdir(inpath)
-
-    videos = 'List of available videos.\n'   
-    for v in filenames:
-        videos +=  v + '\n'
-    print(videos)
-#   write out this video list in "output" directory
-    print('outpath = ', outpath)
-    with open('filename', 'w') as f:
-        if allow:
-            f.write(videos)
-# videos = movie program is done
-# prepare 'shortnames' a filenames with possibly shorter names.
+    videos = logit('fresh_data')
+    print('videos','\n' + videos)
     shortnames = []
-    print('segments = ', segments)
-    x1 = int(segments[0])
-    x2 = int(segments[1])
-    for v in filenames:
-        if (len(v) - 4) > x1:
-            xx = x1
-        else:
-            xx = len(v) - 4
-        t = v[:xx] + v[x2:]
-        print('t = ', t)
-        w = ''
-        for vv in t.replace('-',' ').split():
-            if verbose:               
-                print('split vv = ',vv)
-            w += (vv+'_')            
-        shortnames.append(w[:-1])
-    print('\n*** shortnames ***\n')
-    for short in shortnames:
-        print(short)
-    nn = len(shortnames)
-    if allow:       
-        for i in range(len(shortnames)):
-            os.rename(('data/' + filenames[i]), 'data/' + shortnames[i])
-    print("Finished up filenames? If not then this is not the end!\n")   
+    filenames = os.listdir('fresh_data')
+    print('debug * information: segments = ', segments)
+    for filename in filenames:
+        w_filename = washme(filename)
+        print(w_filename)
+        
+        shortname = w_filename[:segments[0]] + w_filename[segments[1]:]
+##        print(shortname)
+        shortnames.append(shortname)
+    shortnames.sort()
+    print('verify list of shortnames')
+    listprint(shortnames)
+  
+    print("Finished up filenames? If not then this is not the end.")   
     return
 
 def transcode(args):
@@ -129,10 +141,6 @@ def transcode(args):
     
     for name in filenames:
         start_time = time.time()
-##        while True:
-##            time.sleep(2)
-##            print('.',end='')
-##            sys.stdout.flush()
         if name[-4: ] == '.flv':
             listinput.append(name)
             subprocess.call(["HandBrakeCLI", "-i",cwd + '/data/'+ name,
@@ -160,6 +168,11 @@ if __name__=='__main__':
     main()
 
 ## todo:
-##  Run with '-a' argument and degug
+##  Run with '-a' argument and debug
 ##  record and show time of transcoding
 ##  0.0.1 Added sample data files in "data" which is in a  'cute' subdirectory.
+##  0.0.2 Removed data files from freshdata directory.
+##  Currently operating by changing defaults for segments
+##  did not execute the transcoding - must do soon
+##  have not saved the log book - must put it in output rsn   
+##
