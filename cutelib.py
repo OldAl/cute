@@ -1,9 +1,4 @@
-#!/usrh_data/Peleda - S01E02 - Series 1 Ep 2 Giltine.flv
-bin/python3
-# 
-# program is usefull for multi media file organisation to ease access
-# to available media files and to transcode file when transcoding
-# facilitates access.
+#!/usr/bin/python3
 '''
 Program name:  cutelib.py -- python 3.x program is in the current
 "cute" directory.  
@@ -31,11 +26,12 @@ import sys
 import argparse
 import subprocess
 import time
+import shutil
 
 __version__ = '0.0.3   2015-12-22 Canberra'
 
 print('cutelib.py  version ' + __version__)
-print('**********************************************\n')
+print('***********************************************\n')
 
 # Following 2 lines are required work-around to use IDLE
 ##sys.argv = [sys.argv[0],'-v','-a','segments','inpath','outpath']
@@ -71,7 +67,11 @@ written to fresh_data, other than importation of a bunch of files.
     lst.sort()
     for v in lst:
         w += v + '\n'
-    return w[:-1]
+    return w
+# 
+# program is usefull for multi media file organisation to ease access
+# to available media files and to transcode file when transcoding
+# facilitates access.
 
 
 def prolog():
@@ -86,7 +86,7 @@ def prolog():
     parser.add_argument('segments',nargs='?',default=[13, -4],
     help='segs[0] ch at start, segs[1] at end makeup the file name.')
     parser.add_argument('inpath',nargs='?',default=os.getcwd()+'/data/',
-                        help='absolute path to data directory.')
+           help='absolute path to data directory.')
     parser.add_argument('outpath',nargs='?',default=os.getcwd()+'/output/',
                         help='absolute pathe to output directory.')
 
@@ -123,12 +123,12 @@ are kept unchanged.'''
         print(w_filename)
         
         shortname = w_filename[:segments[0]] + w_filename[segments[1]:]
-##        print(shortname)
         shortnames.append(shortname)
     shortnames.sort()
     print('verify list of shortnames')
     listprint(shortnames)
-  
+    for i in range(len(filenames)):
+        shutil.copy('fresh_data/'+filenames[i], 'data/'+shortnames[i]) 
     print("Finished up filenames? If not then this is not the end.")   
     return
 
