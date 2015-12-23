@@ -35,7 +35,7 @@ print('***********************************************\n')
 
 # Following 2 lines are required work-around to use IDLE
 ##sys.argv = [sys.argv[0],'-v','-a','segments','inpath','outpath']
-sys.argv = [sys.argv[0],'-v', '-a'] 
+#sys.argv = [sys.argv[0],'-v', '-a'] 
 print ('sys.argv = ', sys.argv)
 
 def listprint(lst):
@@ -112,9 +112,11 @@ are kept unchanged.'''
           'allow = ',allow,'\n','segments = ',segments,'\n',
           'inpath = ',inpath,'\n','outpath = ',outpath,'\n')
     # the parameters (paras) will need to be read by this program as data
-    videos = 'This is the list of the content of the videos.'
+##    videos = 'This is the list of the content of the videos.'
     videos = logit('fresh_data')
     print('videos','\n' + videos)
+    with open('output/video_list','w') as f1:
+        f1.write(videos)
     shortnames = []
     filenames = os.listdir('fresh_data')
     print('debug * information: segments = ', segments)
