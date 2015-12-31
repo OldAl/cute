@@ -28,15 +28,23 @@ import subprocess
 import time
 import shutil
 
-__version__ = '0.0.3   2015-12-22 Canberra'
+__version__ = '0.0.4   2015-12-30 Canberra'
 
 print('cutelib.py  version ' + __version__)
 print('***********************************************\n')
+
+# verbose is a global variable, which is convenient here, but generally
+# a bad practice. Perhaps. 
+verbose = False
 
 # Following 2 lines are required work-around to use IDLE
 ##sys.argv = [sys.argv[0],'-v','-a','segments','inpath','outpath']
 #sys.argv = [sys.argv[0],'-v', '-a'] 
 print ('sys.argv = ', sys.argv)
+
+def vprint(obj):
+	'Prinnt if verbose is True.'
+	if verbose: print(obj)
 
 def listprint(lst):
     for item in lst:
@@ -79,7 +87,7 @@ def prolog():
     
     parser = argparse.ArgumentParser()
     parser.add_argument('-v','--verbose',action='store_true',
-                        help='Verbose data to help debugging.')
+                        help='Verbose output to help debugging.')
     parser.add_argument('-a','--allow',action='store_true',
                         help='Allow modification of data on disk.')
 
@@ -94,10 +102,11 @@ def prolog():
     if args.verbose:
         print('prolog finished setting up of args.')                
         print('Name space args = ', args)
-        return args
+    verbose = args.verbose          
+    return args
 
 def fix_filenames(args):
-    ''' Two segments of of old file name makes up the new name - one at the
+    ''' Two segments of the old file name makes up the new name - one at the
 start of the name, the other at the end of the name. Once the new names are
 made, all blanks in the name are replaced by underscore. Contiguous blanks are
 replaced by one undersore. File name extensions, indicating the type of file,
@@ -127,7 +136,7 @@ are kept unchanged.'''
         shortname = w_filename[:segments[0]] + w_filename[segments[1]:]
         shortnames.append(shortname)
     shortnames.sort()
-    print('verify list of shortnames')
+    vprint('verify list of shortnames')
     listprint(shortnames)
     for i in range(len(filenames)):
         shutil.copy('fresh_data/'+filenames[i], 'data/'+shortnames[i]) 
@@ -164,18 +173,12 @@ def main():
         print('Show args in the main = ', args)
 # in the example the new name is made up from the old name:
     fix_filenames(args)
-    transcode(args)
+#    transcode(args)
     return
 
 if __name__=='__main__':
     main()
 
 ## todo:
-##  Run with '-a' argument and debug
-##  record and show time of transcoding
-##  0.0.1 Added sample data files in "data" which is in a  'cute' subdirectory.
-##  0.0.2 Removed data files from freshdata directory.
-##  Currently operating by changing defaults for segments
-##  did not execute the transcoding - must do soon
-##  have not saved the log book - must put it in output rsn   
-##
+## Determone why does it run ok with -v parameter (verbose) but fails 
+## otherwise.#FFFFFF
