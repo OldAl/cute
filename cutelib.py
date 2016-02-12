@@ -13,7 +13,7 @@ optional arguments:
 -------------------
 -h --help    - provide basic help and then quit
 -v --verbose - main use to provide more output for debugging
--a --allow   - allow modification of data on disk
+-a --allow   - allow transcoding and modification of data on disk
 
 positional arguments:
 ---------------------
@@ -28,13 +28,14 @@ import subprocess
 import time
 import shutil
 
-__version__ = '0.0.4   2015-12-30 Canberra'
+__version__ = '0.0.5   2016-02-07 Canberra'
 
 print('cutelib.py  version ' + __version__)
 print('***********************************************\n')
 
 # verbose is a global variable, which is convenient here, but generally
-# a bad practice. Perhaps. 
+# a bad practice.
+
 verbose = False
 
 # Following 2 lines are required work-around to use IDLE
@@ -47,8 +48,7 @@ def vprint(obj):
 	if verbose: print(obj)
 
 def listprint(lst):
-    for item in lst:
-        print(item)
+	for item in lst: print(item)
 
 def washme(filename):
     ''' Take a file name, possibly with blanks and "-" then
@@ -91,7 +91,7 @@ def prolog():
     parser.add_argument('-a','--allow',action='store_true',
                         help='Allow modification of data on disk.')
 
-    parser.add_argument('segments',nargs='?',default=[13, -4],
+    parser.add_argument('segments',nargs='?',default=[],
     help='segs[0] ch at start, segs[1] at end makeup the file name.')
     parser.add_argument('inpath',nargs='?',default=os.getcwd()+'/data/',
            help='absolute path to data directory.')
@@ -100,23 +100,25 @@ def prolog():
 
     args = parser.parse_args()
     if args.verbose:
-        print('prolog finished setting up of args.')                
+        print('prolog finished setting up of args.')               
         print('Name space args = ', args)
     verbose = args.verbose          
     return args
 
+def one():
+	return
+
 def fix_filenames(args):
-    ''' Two segments of the old file name makes up the new name - one at the
-start of the name, the other at the end of the name. Once the new names are
-made, all blanks in the name are replaced by underscore. Contiguous blanks are
-replaced by one undersore. File name extensions, indicating the type of file,
-are kept unchanged.'''
+    ''' The old file name or its segments makes up the new name. 
+Once the new names are made, all blanks in the name are replaced 
+by underscore. Contiguous blanks are replaced by one undersore. 
+File name extensions, indicating the type of file, are kept.'''
     verbose  = args.verbose
     allow    = args.allow
     segments = args.segments
     inpath   = args.inpath
     outpath  = args.outpath
-    
+    vprint('***fix_filenames***')
     print('\n Formatted Namespace args = \n','verbose = ', verbose,'\n',
           'allow = ',allow,'\n','segments = ',segments,'\n',
           'inpath = ',inpath,'\n','outpath = ',outpath,'\n')
@@ -124,23 +126,31 @@ are kept unchanged.'''
 ##    videos = 'This is the list of the content of the videos.'
     videos = logit('fresh_data')
     print('videos','\n' + videos)
-    with open('output/video_list','w') as f1:
-        f1.write(videos)
+    with open('output/video_list','w') as f1: f1.write(videos)
     shortnames = []
+    vprint('fresh_data:')
     filenames = os.listdir('fresh_data')
     print('debug * information: segments = ', segments)
-    for filename in filenames:
-        w_filename = washme(filename)
-        print(w_filename)
-        
-        shortname = w_filename[:segments[0]] + w_filename[segments[1]:]
+    if len(segments) == 0:
+        for filename in filenames:
+            shortname = washme(filename)
+            shortnames.append(shortname)
+        shortnames.sort()
+        listprint(shortnames)
+    else:
+#  This section is bubby and requires heavy editing				
+#  This section is bubby and requires heavy editing				
+        for filename in filenames:
+            w_filename = washme(filename)
+            print(w_filename)
+            shortname = w_filename[:segments[0]] + w_filename[segments[1]:]
         shortnames.append(shortname)
-    shortnames.sort()
-    vprint('verify list of shortnames')
+        shortnames.sort()
+    print('verify list of shortnames')
     listprint(shortnames)
     for i in range(len(filenames)):
         shutil.copy('fresh_data/'+filenames[i], 'data/'+shortnames[i]) 
-    print("Finished up filenames? If not then this is not the end.")   
+    print("Finished up filenames.")   
     return
 
 def transcode(args):
@@ -153,7 +163,8 @@ def transcode(args):
     
     for name in filenames:
         start_time = time.time()
-        if name[-4: ] == '.flv':
+# Theis needs to be more general = more than name.flv or .avi
+        if name[-4: ] == '.avi':
             listinput.append(name)
             subprocess.call(["HandBrakeCLI", "-i",cwd + '/data/'+ name,
                             "-o", cwd + '/output/' + name + '.mp4'])
@@ -171,14 +182,14 @@ def main():
     args = prolog()
     if args.verbose:
         print('Show args in the main = ', args)
-# in the example the new name is made up from the old name:
     fix_filenames(args)
-#    transcode(args)
+    if args.allow:
+        transcode(args)
     return
 
 if __name__=='__main__':
     main()
 
 ## todo:
-## Determone why does it run ok with -v parameter (verbose) but fails 
-## otherwise.#FFFFFF
+## Do some testing as a finished program, i.e. no temporary 'easy' 
+## corrections. Last stage in 2015!

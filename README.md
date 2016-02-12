@@ -43,7 +43,16 @@ In renaming we need to consider what information can be discarded and what can b
 
 The most flexible way of renaming is to do it by hand with the aid of file manager, such as Dolphin. Most flexible and most tedious.  We will attempt to classify schemes for some types of related file names, so that they can be renamed programatically.
 
-Usually a bunch of files of a serial video will have something in common.  It turns out that  
+Usually a bunch of files of a serial video will have something in common.  It turns out that 
+
+Naming
+
+if list segments has three numbers then in the original file name
+segments[0] is start of the special number field that will be moved
+to the beginning of the file name
+segment[1] is the length of the special field
+segment[2] is the length of the name that is used. (If segment[2] is arbitrary large number, then the all characters of the name are used.
+To visualise this, suppose that segment[0] =  
 
 
 
