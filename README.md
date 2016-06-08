@@ -17,7 +17,7 @@ We can spend the remaining time acting as if we are "half dead" or we can ignore
 
 Simply put, in old age we have a choice of being **half alive** or **half dead**. Which one is preferable?
 
-The program **cutelib.py** is being designed to be able to shorten the video file names so that they can be easier to see on the screen.  When the video equipment does not recognise some of the free video format, it may be necessary to transcode the file to a different format.  This can be done by various free open source programs.  We fancy **HandBrakeCLI**, which will be called by **cutelib.py** using a sub process, called by the program.
+The program **cutelib.py** is being designed to be able to shorten the video file names so that they can be easier to see on the screen.  When the video equipment does not recognise some of the free video format, it may be necessary to transcode the file to a different format.  This can be done by various free open source programs.  We fancy **HandBrakeCLI**, which will be ivoked by **cutelib.py** using a sub process, called by the program.
 
 As the name suggests the emphasis is on being *cute* and Python is wonderfully suited for the code to be easy to read, to be *cute.*  
 
@@ -41,7 +41,7 @@ Renaming of  files turns out to be a task that needs to be considered seriously.
 
 In renaming we need to consider what information can be discarded and what can be relegated to  a list of file names.  The list will inform users what is in the episode.  That will enable the user to select what she wants to watch.
 
-The most flexible way of renaming is to do it by hand with the aid of file manager, such as Dolphin. Most flexible and most tedious.  We will attempt to classify schemes for some types of related file names, so that they can be renamed programatically.
+The most flexible way of renaming is to do it by hand with the aid of a file manager, such as Dolphin. Most flexible and most tedious.  We will attempt to classify schemes for some types of related file names, so that they can be renamed programatically.
 
 Usually a bunch of files of a serial video will have something in common.  It turns out that 
 
@@ -52,7 +52,27 @@ segments[0] is start of the special number field that will be moved
 to the beginning of the file name
 segment[1] is the length of the special field
 segment[2] is the length of the name that is used. (If segment[2] is arbitrary large number, then the all characters of the name are used.
-To visualise this, suppose that segment[0] =  
+To visualise this, suppose that segment[0] =
+
+And that is where the description was left to hybernate a couple of years...
+
+**  2016 June 8  *  2016 June 8  *  2016 June 8  *  2016 June 8  *  2016 June 8  *  2016 June 8  **
+
+Today is 2016 Jun 08.  On August 28, 2015 my beloved wife Vida passed away and I am a widower, with the intention of staying a widower.
+
+So I have been away from programming for about 2 years.  Also the conditions have changed. i was spurred into action of writing "cute" because my TV did not recognise **flv** (Flash Video) format
+
+My TV has not improved, however I now have a chrome book which is happy to read **flv** files and project them to my **TV** via a **HDMI** cable.  So the dreaded **transcoding** is not so important.  I now plan to develop a separate little program, called rename.py, which will not do any transcoding.  It will simply change the file names in a selection to a more Linux friendly naming convention. All files in a given set will be renamed, by  replacing significant blanks by a '_" underscore character.  Also any arithmetic signs, such as '-' minus and '+' plus will be "banned", as they can cause cofusion under some circumstances when handled by python. Also, I just do not like "+ - " and similar in the file names.  Also in Linux a higher version of python is now common.  In ubuntu and its variants python 3.1 is now "standard".  So first we will fully develop *renamer.py" in a **procedural programming** style, then we shall re-write it in the **object oriented** style.
+
+Only then we will turn our attention to transcoding the files with the modified file names. 
+
+We then will watch the sunsets and will maintain the two programs - renamer.py - renaming of file lists and cute.py - transcoding thus renamed programs. As I have mentioned, I want to write renamer.py in procedural style (**Procedural Style Program, psp**) and then **object oriented style, oos**.
+
+If you see through my intensions an attempt to illustrate the differences between **psp** and **oos** styles, you are quite correct.  I spent my life teaching and I have no desire to stop now.
+
+Al Kabaila  2016 June 8
+e: alkabaila@gmail.com
+
 
 
 
